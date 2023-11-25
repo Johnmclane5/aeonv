@@ -10,7 +10,8 @@ if ospath.exists('log.txt'):
     with open('log.txt', 'r+') as f:
         f.truncate(0)
 
-basicConfig(format='%(message)s', handlers=[FileHandler('log.txt'), StreamHandler()], level=INFO)
+basicConfig(format='%(levelname)s | From %(name)s -> %(module)s line no: %(lineno)d | %(message)s',
+                    handlers=[FileHandler('log.txt'), StreamHandler()], level=INFO)
 
 CONFIG_FILE_URL = environ.get('CONFIG_FILE_URL')
 try:
@@ -55,14 +56,14 @@ if len(UPSTREAM_REPO) == 0:
 
 UPSTREAM_BRANCH = environ.get('UPSTREAM_BRANCH', '')
 if len(UPSTREAM_BRANCH) == 0:
-    UPSTREAM_BRANCH = 'main'
+    UPSTREAM_BRANCH = 'new'
 
 if ospath.exists('.git'):
     srun(["rm", "-rf", ".git"])
 
 update = srun([f"git init -q \
-                 && git config --global user.email yesiamshojib@gmail.com \
-                 && git config --global user.name 5hojib \
+                 && git config --global user.email itsherchoice1010@gmail.com \
+                 && git config --global user.name Johnmclane5 \
                  && git add . \
                  && git commit -sm update -q \
                  && git remote add origin {UPSTREAM_REPO} \
