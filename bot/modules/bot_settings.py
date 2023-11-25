@@ -35,7 +35,7 @@ default_values = {'DEFAULT_UPLOAD': 'gd',
                   'RSS_DELAY': 900,
                   'STATUS_UPDATE_INTERVAL': 10,
                   'SEARCH_LIMIT': 0,
-                  'UPSTREAM_BRANCH': 'main',
+                  'UPSTREAM_BRANCH': 'master',
                   'BOT_LANG': 'en',
                   'IMG_PAGE': 1,
                   'TORRENT_TIMEOUT': 3000
