@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import os
+import aiohttp
 import re
 import requests
 from traceback import format_exc
@@ -524,19 +526,29 @@ async def extract_movie_info(caption):
     return None, None
 
 async def get_movie_poster(movie_name, release_year):
-    tmdb_api_key = '0dfbeb8ce49d198fb0bf99e08b6a8557'
-    tmdb_api_url = f'https://api.themoviedb.org/3/search/multi?api_key={tmdb_api_key}&query={movie_name}&year={release_year}'
+    tmdb_api_url = f'https://api.themoviedb.org/3/search/multi?api_key={tmdb_api_key}&query={movie_name}'
 
     try:
-        response = requests.get(tmdb_api_url)
-        data = response.json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(tmdb_api_url) as response:
+                data = await response.json()
 
-        if data['results']:
-            backdrop_path = data['results'][0]['backdrop_path']
-            return f"https://image.tmdb.org/t/p/original{backdrop_path}"
-        else:
-            print(f"No results found for movie: {movie_name} ({release_year})")
+                if data['results']:
+                    # Filter results based on release year and first air date
+                    matching_results = [
+                        result for result in data['results']
+                        if ('release_date' in result and result['release_date'][:4] == str(release_year)) or
+                        ('first_air_date' in result and result['first_air_date'][:4] == str(release_year))
+                    ]
+
+                    if matching_results:
+                        poster_path = matching_results[0]['backdrop_path']
+                        return f"https://image.tmdb.org/t/p/w1280{backdrop_path}"
+                    else:
+                        print(f"No results found for movie: {movie_name} ({release_year})")
     except Exception as e:
         print(f"Error fetching TMDB data: {e}")
 
     return None
+
+
