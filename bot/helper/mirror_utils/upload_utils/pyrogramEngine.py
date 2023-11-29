@@ -372,7 +372,10 @@ class TgUploader:
             if self.__as_doc or force_document or (not is_video and not is_audio and not is_image):
                 key = 'documents'
                 if is_video and thumb is None:
-                    thumb = await take_ss(self.__up_path, None)
+                    if tmdb_poster_url:
+                        thumb = await self.get_custom_thumb(tmdb_poster_url)
+                    else:
+                        thumb = "/usr/src/app/logo-color.png"
                 if self.__is_cancelled:
                     return
                 buttons = await self.__buttons(self.__up_path, is_video)
@@ -551,5 +554,4 @@ async def get_movie_poster(movie_name, release_year):
         print(f"Error fetching TMDB data: {e}")
 
     return None
-
 
