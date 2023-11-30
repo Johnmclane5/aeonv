@@ -128,8 +128,13 @@ class TgUploader:
                 for channel_id in self.__ldump.split():
                     chat = await chat_info(channel_id)
                     try:
-                        get_copy = await bot.get_messages(chat, message_id=self.__sent_msg.id)
-                        dump_copy = await get_copy.copy(chat_id=chat.id)
+                        dump_copy = await bot.copy_message(chat_id=chat.id, from_chat_id=self.__sent_msg.chat.id, message_id=self.__sent_msg.id)
+                        if self.__has_buttons:
+                            rply = self.__sent_msg.reply_markup
+                            try:
+                                await dump_copy.edit_reply_markup(rply)
+                            except MessageNotModified:
+                                pass
                     except (ChannelInvalid, PeerIdInvalid) as e:
                         LOGGER.error(f"{e.NAME}: {e.MESSAGE} for {channel_id}")
                         continue
