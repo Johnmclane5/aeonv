@@ -546,7 +546,7 @@ async def get_movie_poster(movie_name, release_year):
                     ]
 
                     if matching_results:
-                        poster_path = matching_results[0]['backdrop_path']
+                        poster_path = matching_results[0]['poster_path']
                         return f"https://image.tmdb.org/t/p/w1280{poster_path}"
                     else:
                         print(f"No results found for movie: {movie_name} ({release_year})")
