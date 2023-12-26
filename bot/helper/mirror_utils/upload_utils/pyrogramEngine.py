@@ -568,22 +568,10 @@ async def get_movie_poster(movie_name, release_year):
                         if not backdrop_path and 'poster_path' in result and result['poster_path']:
                             poster_path = result['poster_path']
                             poster_url = f"https://image.tmdb.org/t/p/original{poster_path}"
-
-                            async with session.get(poster_url) as poster_response:
-                                if poster_response.status == 200:
-                                    poster_path = f'poster.jpg'
-                                    async with aiofiles.open(poster_path, 'wb') as f:
-                                        await f.write(await poster_response.read())
-                                        return poster_path
+                            return poster_url
                         elif backdrop_path:
                             backdrop_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
-
-                            async with session.get(backdrop_url) as backdrop_response:
-                                if backdrop_response.status == 200:
-                                    poster_path = f'backdrop.jpg'
-                                    async with aiofiles.open(poster_path, 'wb') as f:
-                                        await f.write(await backdrop_response.read())
-                                        return poster_path
+                            return backdrop_url
                         else:
                             print(
                                 "Failed to obtain backdrop and poster paths from movie_data and result")
