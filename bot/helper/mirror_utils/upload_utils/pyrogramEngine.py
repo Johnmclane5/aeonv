@@ -585,17 +585,17 @@ async def get_movie_poster(movie_name, release_year):
                                         await f.write(await backdrop_response.read())
                                         return poster_path
                         else:
-                            logger.error(
+                            print(
                                 "Failed to obtain backdrop and poster paths from movie_data and result")
 
                     else:
-                        logger.info(
+                        print(
                             f"No matching results found for movie: {movie_name} ({release_year})")
 
                 else:
-                    logger.info(f"No results found for movie: {movie_name}")
+                    print(f"No results found for movie: {movie_name}")
 
     except Exception as e:
-        logger.error(f"Error fetching TMDB data: {e}")
+        print(f"Error fetching TMDB data: {e}")
 
     return None
