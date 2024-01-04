@@ -143,6 +143,10 @@ async def load_config():
     if len(FILELION_API) == 0:
         FILELION_API = ''
 
+    TMDB_API_KEY = environ.get('TMDB_API_KEY', '')
+    if len(TMDB_API_KEY) == 0:
+        TMDB_API_KEY = ''
+
     LEECH_LOG_ID = environ.get('LEECH_LOG_ID', '')
     LEECH_LOG_ID = '' if len(LEECH_LOG_ID) == 0 else int(LEECH_LOG_ID)
     
@@ -403,6 +407,7 @@ async def load_config():
                         'DAILY_LEECH_LIMIT': DAILY_LEECH_LIMIT,                        
                         'FSUB_IDS': FSUB_IDS,
                         'FILELION_API': FILELION_API,
+                        'TMDB_API_KEY': TMDB_API_KEY,
                         'USER_MAX_TASKS': USER_MAX_TASKS,
                         'PLAYLIST_LIMIT': PLAYLIST_LIMIT,
                         'MIRROR_LOG_ID': MIRROR_LOG_ID,
