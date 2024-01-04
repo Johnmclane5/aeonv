@@ -355,16 +355,13 @@ class TgUploader:
         self.__is_corrupted = False
         try:
             is_video, is_audio, is_image = await get_document_type(self.__up_path)
-
             file_name = ospath.splitext(file)[0]
-
             movie_name, release_year = await extract_movie_info(file_name)
             tmdb_poster_url = await get_movie_poster(movie_name, release_year)
             if self.__leech_utils['thumb']:
                 thumb = await self.get_custom_thumb(self.__leech_utils['thumb'])
-                LOGGER.info("Got the poster")
             if not is_image and thumb is None:
-                file_name = ospath.splitext(file)[0]
+                file_name = ospath.splitext(file)[0]                    
                 thumb_path = f"{self.__path}/yt-dlp-thumb/{file_name}.jpg"
                 if await aiopath.isfile(thumb_path):
                     thumb = thumb_path
@@ -376,7 +373,6 @@ class TgUploader:
                 if is_video and thumb is None:
                     if tmdb_poster_url:
                         thumb = await self.get_custom_thumb(tmdb_poster_url)
-                        LOGGER.info("Got the poster")       
                     else:
                         thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
                 if self.__is_cancelled:
@@ -406,7 +402,6 @@ class TgUploader:
                 if thumb is None:
                     if tmdb_poster_url:
                         thumb = await self.get_custom_thumb(tmdb_poster_url)
-                        LOGGER.info("Got the poster")       
                     else:
                         thumb = await take_ss(self.__up_path, duration)
                 if thumb is not None:
