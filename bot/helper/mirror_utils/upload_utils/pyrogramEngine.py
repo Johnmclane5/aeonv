@@ -377,7 +377,7 @@ class TgUploader:
                     if tmdb_poster_url:
                         thumb = await self.get_custom_thumb(tmdb_poster_url)
                         LOGGER.info("Got the poster")       
-                    else
+                    else:
                         thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
                 if self.__is_cancelled:
                     return
@@ -407,7 +407,7 @@ class TgUploader:
                     if tmdb_poster_url:
                         thumb = await self.get_custom_thumb(tmdb_poster_url)
                         LOGGER.info("Got the poster")       
-                    else
+                    else:
                         thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
                 if thumb is not None:
                     with Image.open(thumb) as img:
