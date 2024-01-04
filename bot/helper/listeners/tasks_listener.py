@@ -19,7 +19,6 @@ from bot.helper.ext_utils.bot_utils import extra_btns, sync_to_async, get_readab
 from bot.helper.ext_utils.fs_utils import get_base_name, get_path_size, clean_download, clean_target, is_first_archive_split, is_archive, is_archive_split, join_files
 from bot.helper.ext_utils.leech_utils import split_file, format_filename
 from bot.helper.ext_utils.exceptions import NotSupportedExtractionArchive
-from bot.helper.ext_utils.aeon_utils import extract_movie_info, get_movie_poster
 from bot.helper.ext_utils.task_manager import start_from_queued
 from bot.helper.mirror_utils.status_utils.extract_status import ExtractStatus
 from bot.helper.mirror_utils.status_utils.zip_status import ZipStatus
@@ -585,4 +584,35 @@ Your upload has been stopped!
         await clean_download(self.dir)
         if self.newDir:
             await clean_download(self.newDir)
+
+async def extract_movie_info(caption):
+    try:
+        regex = re.compile(r'(.+?)(\d{4})')
+        match = regex.search(caption)
+
+        if match:
+             movie_name = match.group(1).replace('.', ' ').strip()
+             release_year = match.group(2)
+             return movie_name, release_year
+    except Exception as e:
+        print(e)
+    return None, None
+
+async def get_movie_poster(movie_name, release_year):
+    TMDB_API = config_dict['TMDB_API_KEY']
+    tmdb_api_url = f'https://api.themoviedb.org/3/search/multi?api_key={TMDB_API}&query={movie_name}&year={release_year}'
+
+    try:
+        response = requests.get(tmdb_api_url)
+        data = response.json()
+
+        if data['results']:
+            poster_path = data['results'][0]['poster_path']
+            return f"https://image.tmdb.org/t/p/original{poster_path}"
+        else:
+            print(f"No results found for movie: {movie_name} ({release_year})")
+    except Exception as e:
+        print(f"Error fetching TMDB data: {e}")
+
+    return None
 
