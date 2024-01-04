@@ -360,9 +360,9 @@ class TgUploader:
 
             movie_name, release_year = await extract_movie_info(file_name)
             tmdb_poster_url = await get_movie_poster(movie_name, release_year)
-            LOGGER.info("Got the poster")
             if tmdb_poster_url:
                 thumb = await self.get_custom_thumb(tmdb_poster_url)
+                LOGGER.info("Got the poster")
             if not is_image and thumb is None:
                 file_name = ospath.splitext(file)[0]
                 thumb_path = f"{self.__path}/yt-dlp-thumb/{file_name}.jpg"
@@ -376,7 +376,8 @@ class TgUploader:
                 if is_video and thumb is None:
                     if tmdb_poster_url:
                         thumb = await self.get_custom_thumb(tmdb_poster_url)
-                    else:
+                        LOGGER.info("Got the poster")       
+                    else
                         thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
                 if self.__is_cancelled:
                     return
@@ -403,7 +404,11 @@ class TgUploader:
                 key = 'videos'
                 duration = (await get_media_info(self.__up_path))[0]
                 if thumb is None:
-                    thumb = await take_ss(self.__up_path, duration)
+                    if tmdb_poster_url:
+                        thumb = await self.get_custom_thumb(tmdb_poster_url)
+                        LOGGER.info("Got the poster")       
+                    else
+                        thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
                 if thumb is not None:
                     with Image.open(thumb) as img:
                         width, height = img.size
