@@ -180,6 +180,10 @@ FILELION_API = environ.get('FILELION_API', '')
 if len(FILELION_API) == 0:
     FILELION_API = ''
 
+TMDB_API_KEY = environ.get('TMDB_API_KEY', '')
+if len(TMDB_API_KEY) == 0:
+    TMDB_API_KEY = ''
+
 UPTOBOX_TOKEN = environ.get('UPTOBOX_TOKEN', '')
 if len(UPTOBOX_TOKEN) == 0:
     UPTOBOX_TOKEN = ''
@@ -379,6 +383,7 @@ config_dict = {'AS_DOCUMENT': AS_DOCUMENT,
                'DATABASE_URL': DATABASE_URL,
                'DEFAULT_UPLOAD': DEFAULT_UPLOAD,
                'FILELION_API': FILELION_API,
+               'TMDB_API_KEY': TMDB_API_KEY,
                'GDTOT_CRYPT': GDTOT_CRYPT,
                'STORAGE_THRESHOLD': STORAGE_THRESHOLD,
                'TORRENT_LIMIT': TORRENT_LIMIT,
