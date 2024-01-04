@@ -358,9 +358,8 @@ class TgUploader:
 
             movie_name, release_year = await extract_movie_info(file_name)
             tmdb_poster_url = await get_movie_poster(movie_name, release_year)
-            LOGGER.info("Got the poster")
-            if tmdb_poster_url:
-                thumb = await self.get_custom_thumb(tmdb_poster_url)
+            if self.__leech_utils['thumb']:
+                thumb = await self.get_custom_thumb(self.__leech_utils['thumb'])
             if not is_image and thumb is None:
                 file_name = ospath.splitext(file)[0]
                 thumb_path = f"{self.__path}/yt-dlp-thumb/{file_name}.jpg"
@@ -374,6 +373,7 @@ class TgUploader:
                 if is_video and thumb is None:
                     if tmdb_poster_url:
                         thumb = await self.get_custom_thumb(tmdb_poster_url)
+                        LOGGER.info("Got the poster")    
                     else:
                         thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
                 if self.__is_cancelled:
@@ -401,7 +401,11 @@ class TgUploader:
                 key = 'videos'
                 duration = (await get_media_info(self.__up_path))[0]
                 if thumb is None:
-                    thumb = await take_ss(self.__up_path, duration)
+                    if tmdb_poster_url:
+                        thumb = await self.get_custom_thumb(tmdb_poster_url)
+                        LOGGER.info("Got the poster")
+                    else:
+                        thumb = await take_ss(self.__up_path, duration)
                 if thumb is not None:
                     with Image.open(thumb) as img:
                         width, height = img.size
@@ -529,8 +533,8 @@ async def extract_movie_info(caption):
     return None, None
 
 async def get_movie_poster(movie_name, release_year):
-    TMDB_API_KEY = '0dfbeb8ce49d198fb0bf99e08b6a8557'
-    tmdb_search_url = f'https://api.themoviedb.org/3/search/multi?api_key={TMDB_API_KEY}&query={movie_name}'
+    TMDB_API = config_dict['TMDB_API_KEY']
+    tmdb_search_url = f'https://api.themoviedb.org/3/search/multi?api_key={TMDB_API}&query={movie_name}'
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(tmdb_search_url) as search_response:
@@ -552,7 +556,7 @@ async def get_movie_poster(movie_name, release_year):
                         movie_id = result['id']
                         media_type = result['media_type']
 
-                        tmdb_movie_url = f'https://api.themoviedb.org/3/{media_type}/{movie_id}/images?api_key={TMDB_API_KEY}&language=en-US&include_image_language=en'
+                        tmdb_movie_url = f'https://api.themoviedb.org/3/{media_type}/{movie_id}/images?api_key={TMDB_API}&language=en-US&include_image_language=en'
 
                         async with session.get(tmdb_movie_url) as movie_response:
                             movie_data = await movie_response.json()
