@@ -25,7 +25,6 @@ from bot.helper.ext_utils.bot_utils import get_readable_file_size, sync_to_async
 from bot.helper.ext_utils.leech_utils import get_media_info, get_document_type, take_ss, get_ss, get_mediainfo_link, format_filename, get_audio_thumb
 from bot.helper.ext_utils.aeon_utils import extract_movie_info, get_movie_poster
 
-
 LOGGER = getLogger(__name__)
 getLogger("pyrogram").setLevel(ERROR)
 
@@ -360,13 +359,11 @@ class TgUploader:
 
             movie_name, release_year = await extract_movie_info(file_name)
             tmdb_poster_url = await get_movie_poster(movie_name, release_year)
-            
-            if self.__leech_utils['thumb']:
-                thumb = await self.get_custom_thumb(self.__leech_utils['thumb'])
-            else:
+            LOGGER.info("Got the poster")
+            if tmdb_poster_url:
                 thumb = await self.get_custom_thumb(tmdb_poster_url)
             if not is_image and thumb is None:
-                file_name = ospath.splitext(file)[0]                    
+                file_name = ospath.splitext(file)[0]
                 thumb_path = f"{self.__path}/yt-dlp-thumb/{file_name}.jpg"
                 if await aiopath.isfile(thumb_path):
                     thumb = thumb_path
@@ -376,7 +373,10 @@ class TgUploader:
             if self.__as_doc or force_document or (not is_video and not is_audio and not is_image):
                 key = 'documents'
                 if is_video and thumb is None:
-                    thumb = await take_ss(self.__up_path, None)
+                    if tmdb_poster_url:
+                        thumb = await self.get_custom_thumb(tmdb_poster_url)
+                    else:
+                        thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
                 if self.__is_cancelled:
                     return
                 buttons = await self.__buttons(self.__up_path, is_video)
@@ -515,3 +515,4 @@ class TgUploader:
         self.__is_cancelled = True
         LOGGER.info(f"Cancelling Upload: {self.name}")
         await self.__listener.onUploadError('Cancelled by user!')
+
