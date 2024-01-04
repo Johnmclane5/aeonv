@@ -355,11 +355,16 @@ class TgUploader:
         self.__is_corrupted = False
         try:
             is_video, is_audio, is_image = await get_document_type(self.__up_path)
+
             file_name = ospath.splitext(file)[0]
+
             movie_name, release_year = await extract_movie_info(file_name)
             tmdb_poster_url = await get_movie_poster(movie_name, release_year)
+            
             if self.__leech_utils['thumb']:
                 thumb = await self.get_custom_thumb(self.__leech_utils['thumb'])
+            else:
+                thumb = await self.get_custom_thumb(tmdb_poster_url)
             if not is_image and thumb is None:
                 file_name = ospath.splitext(file)[0]                    
                 thumb_path = f"{self.__path}/yt-dlp-thumb/{file_name}.jpg"
@@ -371,10 +376,7 @@ class TgUploader:
             if self.__as_doc or force_document or (not is_video and not is_audio and not is_image):
                 key = 'documents'
                 if is_video and thumb is None:
-                    if tmdb_poster_url:
-                        thumb = await self.get_custom_thumb(tmdb_poster_url)
-                    else:
-                        thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
+                    thumb = await take_ss(self.__up_path, None)
                 if self.__is_cancelled:
                     return
                 buttons = await self.__buttons(self.__up_path, is_video)
@@ -400,10 +402,7 @@ class TgUploader:
                 key = 'videos'
                 duration = (await get_media_info(self.__up_path))[0]
                 if thumb is None:
-                    if tmdb_poster_url:
-                        thumb = await self.get_custom_thumb(tmdb_poster_url)
-                    else:
-                        thumb = await take_ss(self.__up_path, duration)
+                    thumb = await take_ss(self.__up_path, duration)
                 if thumb is not None:
                     with Image.open(thumb) as img:
                         width, height = img.size
