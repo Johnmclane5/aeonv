@@ -1,6 +1,7 @@
 import re
 import pyshorteners
 from bot import LOGGER, config_dict
+from re import IGNORECASE, search, escape
 
 async def extract_movie_info(caption):
     try:
