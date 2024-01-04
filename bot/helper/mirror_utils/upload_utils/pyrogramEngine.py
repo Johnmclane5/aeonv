@@ -408,7 +408,7 @@ class TgUploader:
                         thumb = await self.get_custom_thumb(tmdb_poster_url)
                         LOGGER.info("Got the poster")       
                     else:
-                        thumb = await self.get_custom_thumb('https://graph.org/file/2172281dca0e0e638b426.jpg')
+                        thumb = await take_ss(self.__up_path, duration)
                 if thumb is not None:
                     with Image.open(thumb) as img:
                         width, height = img.size
