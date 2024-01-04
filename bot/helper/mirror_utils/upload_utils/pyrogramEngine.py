@@ -25,6 +25,7 @@ from bot.helper.ext_utils.bot_utils import get_readable_file_size, sync_to_async
 from bot.helper.ext_utils.leech_utils import get_media_info, get_document_type, take_ss, get_ss, get_mediainfo_link, format_filename, get_audio_thumb
 from bot.helper.ext_utils.aeon_utils import extract_movie_info, get_movie_poster
 
+
 LOGGER = getLogger(__name__)
 getLogger("pyrogram").setLevel(ERROR)
 
@@ -360,8 +361,8 @@ class TgUploader:
             movie_name, release_year = await extract_movie_info(file_name)
             tmdb_poster_url = await get_movie_poster(movie_name, release_year)
             LOGGER.info("Got the poster")
-            if self.__leech_utils['thumb']:
-                thumb = await self.get_custom_thumb(self.__leech_utils['thumb'])
+            if tmdb_poster_url:
+                thumb = await self.get_custom_thumb(tmdb_poster_url)
             if not is_image and thumb is None:
                 file_name = ospath.splitext(file)[0]
                 thumb_path = f"{self.__path}/yt-dlp-thumb/{file_name}.jpg"
@@ -402,7 +403,7 @@ class TgUploader:
                 key = 'videos'
                 duration = (await get_media_info(self.__up_path))[0]
                 if thumb is None:
-                    thumb = await self.get_custom_thumb(tmdb_poster_url)
+                    thumb = await take_ss(self.__up_path, duration)
                 if thumb is not None:
                     with Image.open(thumb) as img:
                         width, height = img.size
