@@ -453,13 +453,12 @@ class MirrorLeechListener:
                 buttons = extra_btns(buttons)
                 button = buttons.build_menu(2)
                 photo = tmdb_poster_url
-                adlink = f'<b>☁️: {shorty}</b>\n'
             else:
                 msg += f'<b>Path: </b><code>{rclonePath}</code>\n'
                 button = None
             if config_dict['MIRROR_LOG_ID']:
                 buttonss = button
-                log_msg = list((await sendMultiMessage(config_dict['MIRROR_LOG_ID'], nmsg + msg + adlink, photo)).values())[0]
+                log_msg = list((await sendMultiMessage(config_dict['MIRROR_LOG_ID'], nmsg + msg, buttonss, photo)).values())[0]
                 if self.linkslogmsg:
                     await deleteMessage(self.linkslogmsg)
             buttons = ButtonMaker()
