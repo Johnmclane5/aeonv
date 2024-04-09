@@ -432,6 +432,7 @@ class MirrorLeechListener:
             if link or rclonePath and config_dict['RCLONE_SERVE_URL']:
                 if link:
                     shorty = tinyfy(short_url(link))
+                    msg += f'<b>☁️: {shorty}</b>\n'
                     buttons.ubutton('☁️ Cloud link', shorty)
                 else:
                     msg += f'<b>Path: </b><code>{rclonePath}</code>\n'
@@ -458,7 +459,7 @@ class MirrorLeechListener:
                 button = None
             if config_dict['MIRROR_LOG_ID']:
                 buttonss = button
-                log_msg = list((await sendMultiMessage(config_dict['MIRROR_LOG_ID'], nmsg + msg, buttonss, photo)).values())[0]
+                log_msg = list((await sendMultiMessage(config_dict['MIRROR_LOG_ID'], nmsg + msg, photo)).values())[0]
                 if self.linkslogmsg:
                     await deleteMessage(self.linkslogmsg)
             buttons = ButtonMaker()
